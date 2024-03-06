@@ -88,7 +88,42 @@ function actualizarPrecio() {
         precioFinalElement.textContent = `Precio final: $${precioTotal}`;
     }
 }
+document.querySelector('.comprar').addEventListener('click', function(){
+    let tiempoRestante = 5; 
+    Swal.fire({
+        title: "¿Está seguro que desea realizar la compra?",
+        text: `El valor total es de: $${precioTotal}`,
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: "Sí, estoy seguro",
+        denyButtonText: `Cancelar`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "¡Se realizó la compra con éxito!",
+            html: `Redirigiendo en <strong id="tiempo-restante">${tiempoRestante}</strong> segundos.`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: tiempoRestante * 1000,
+            timerProgressBar: true,
+            didOpen: () => {
+              const interval = setInterval(() => {
+                tiempoRestante--;
+                document.getElementById('tiempo-restante').textContent = tiempoRestante;
+              }, 1000);
+              setTimeout(() => {
+                clearInterval(interval);
+              }, tiempoRestante * 1000);
+            }
+          }).then(() => {
+            localStorage.clear();
+            window.location.href = "../index.html";
+          });
+        }
+      });
+});
 const suma = (a, b) => a+b; 
 
 actualizarPrecio();
 agregarAlCarrito();
+
